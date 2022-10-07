@@ -16,89 +16,71 @@ keyboard = Controller()
 option1 = Options()
 option1.add_argument("--disable-notifications")
 browser =webdriver.Chrome(ChromeDriverManager().install(),chrome_options=option1)
-browser.maximize_window()
+#browser.maximize_window()
 browser.get('https://www.mathtrainer.org/')
-time.sleep(1.5)
+time.sleep(1)
 startButton = browser.find_element_by_class_name("start.is-armed")
 startButton.click()
 
+x=0
 
 
 #---------first round-------------
-for i in range(4):
-    time.sleep(1.5)
-    firstNumberText = browser.find_element_by_class_name("a").text
-    secondNumberText = browser.find_element_by_class_name("b").text
-    operator = browser.find_element_by_class_name("operator").text
+while x<10:
+    
+    time.sleep(2)
+    firstNumberText = browser.find_element_by_xpath('//*[@id="app"]/div/section/section/div/div/span/span/span/span[2]/span[1]/span[2]').text
+    secondNumberText = browser.find_element_by_xpath('//*[@id="app"]/div/section/section/div/div/span/span/span/span[2]/span[2]/span[2]').text
+    operator = browser.find_element_by_class_name('mbin').text
+    progressFiltered = 0
 
-    progress = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div').get_attribute("style")
-    progressFiltered = str(progress)
-    progressFiltered = re.sub('width', '',progressFiltered)
-    progressFiltered = re.sub('%;', '',progressFiltered)
-    progressFiltered = re.sub(':', '',progressFiltered)
-    progressFiltered = re.sub(' ', '',progressFiltered)
     firstNumber = int(firstNumberText)
-    secondNumber = int(secondNumberText)       
-    progressForWhile = int(progressFiltered)
+    secondNumber = int(secondNumberText)
     if(operator == "+"):
         answer = firstNumber + secondNumber
-    elif(operator == "-"):
+    elif(operator == "−"):
         answer = firstNumber - secondNumber
-    elif(operator == "/"):
+    elif(operator == "÷"):
         answer = firstNumber / secondNumber
-    elif(operator == "*"):
+    elif(operator == "×"):
         answer = firstNumber * secondNumber
     textAnswer = str(answer)
     print(firstNumber,operator,secondNumber,'=',answer,' | ',progressFiltered, "%")
     keyboard.type(textAnswer)
 
-#---------end of first round-------------
+    progress = browser.find_element_by_class_name('progress').get_attribute("style")
+    progressFiltered = str(progress)
+    progressFiltered = re.sub('width: ', '',progressFiltered)
+    progressFiltered = re.sub('%;', '',progressFiltered)
+    progressFiltered = int(progressFiltered)
 
-progressForWhile = 0
-time.sleep(3)
-continueButton = browser.find_element_by_class_name("start.is-armed")
-continueButton.click()
-
-#---------rest of the rounds-----------
-
-for i in range(6):
-
-    #while progressForWhile <85:
-    for z in range(8):
+    numberOfTimes = round(100 / progressFiltered) - 1
+    progressFilteredDisplay = progressFiltered
+    for i in range(numberOfTimes):
         time.sleep(2)
-        firstNumberText = browser.find_element_by_class_name("a").text
-        secondNumberText = browser.find_element_by_class_name("b").text
-        operator = browser.find_element_by_class_name("operator").text
+        firstNumberText = browser.find_element_by_xpath('//*[@id="app"]/div/section/section/div/div/span/span/span/span[2]/span[1]/span[2]').text
+        secondNumberText = browser.find_element_by_xpath('//*[@id="app"]/div/section/section/div/div/span/span/span/span[2]/span[2]/span[2]').text
+        operator = browser.find_element_by_class_name('mbin').text
         
-        progress = browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div').get_attribute("style")
-
-        progressFiltered = str(progress)
-        progressFiltered = re.sub('width', '',progressFiltered)
-        progressFiltered = re.sub('%;', '',progressFiltered)
-        progressFiltered = re.sub(':', '',progressFiltered)
-        progressFiltered = re.sub(' ', '',progressFiltered)
-
-
         firstNumber = int(firstNumberText)
-        secondNumber = int(secondNumberText)       
-        progressForWhile = int(progressFiltered)
+        secondNumber = int(secondNumberText)
+        print(firstNumber,operator,secondNumber)
 
         if(operator == "+"):
             answer = firstNumber + secondNumber
-        elif(operator == "-"):
+        if(operator == "−"):
             answer = firstNumber - secondNumber
-        elif(operator == "/"):
+        if(operator == "÷"):
             answer = firstNumber / secondNumber
-        elif(operator == "*"):
+        if(operator == "×"):
             answer = firstNumber * secondNumber
-
         textAnswer = str(answer)
-        print(firstNumber,operator,secondNumber,'=',answer,' | ',progressFiltered, "%")
-
+        print(firstNumber,operator,secondNumber,'=',answer,' | ',progressFilteredDisplay, "%")
         keyboard.type(textAnswer)
-    time.sleep(5)
+        progressFilteredDisplay += progressFiltered
+
+    time.sleep(3)
     continueButton = browser.find_element_by_class_name("start.is-armed")
     continueButton.click()
-    progressForWhile = 0
+    x-=1
 
-#---------rest of the rounds-----------
