@@ -1,5 +1,5 @@
 # mathtrainer
-a program to that plays mathtrainer.
+a program to that plays mathtrainer online game.
 
 DOESNTWORKANYMORE.
 
